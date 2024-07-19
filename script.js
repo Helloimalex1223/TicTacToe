@@ -3,7 +3,6 @@ let rows;
 
 
 //gameboard function
-
 (function(playerChoice, computerChoice)
     {
       console.log("Gameboard created:");
@@ -18,7 +17,6 @@ let rows;
         rows.splice(computerChoice, 1, "x");
         console.log(`Current gameboard: ${rows}`);  
       }
-
 
       //player choice
       function playChoice(playerChoice)
@@ -77,6 +75,20 @@ function createPlayer(name)
   }
 }
 
+
+//Todo: finish game function. Checks for a winner or a tie
+function game()
+{
+  function checkWinner(rows)
+  {
+    if(rows[0] && rows[1] && rows[2] == "x" || rows[0] && rows[1] && rows[2] == "o")
+    {
+      return (console.log("Winner!!"));
+    }
+  }
+}
+
+//create player and computer object
 let comp = createComputer("Jim");
 let play = createPlayer("Alex");
 
@@ -85,16 +97,23 @@ console.log("Player's turn to choose:")
 let myChoice = play.playerChoose();
 playChoice(myChoice);
 
-//logic for the computer to choose a space on the board
-console.log("Computer's turn to choose:")
-comp.computerChoose();
-compChoice(comp.computerChoose());
 
+console.log("Player's turn to choose:")
+myChoice = play.playerChoose();
+playChoice(myChoice);
+
+console.log("Player's turn to choose:")
+myChoice = play.playerChoose();
+playChoice(myChoice);
+
+game.checkWinner(rows);
 
 //logic for the player to choose a space on the board
 console.log("Player's turn to choose:")
 myChoice = play.playerChoose();
 playChoice(myChoice);
+
+game.checkWinner(rows);
 
 //logic for the computer to choose a space on the board
 console.log("Computer's turn to choose:")
