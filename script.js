@@ -1,9 +1,10 @@
 let rows;
-
+let playerValueChoice;
+let compValueChoice;
 
 
 //gameboard function
-(function(playerChoice, computerChoice)
+(function()
     {
       console.log("Gameboard created:");
 
@@ -14,7 +15,7 @@ let rows;
       function compChoice(computerChoice)
       {
         console.log(computerChoice);
-        rows.splice(computerChoice, 1, "x");
+        rows.splice(computerChoice, 1, compValueChoice);
         console.log(`Current gameboard: ${rows}`);  
       }
 
@@ -22,7 +23,7 @@ let rows;
       function playChoice(playerChoice)
       {
         console.log(playerChoice);
-        rows.splice(playerChoice, 1, "O");
+        rows.splice(playerChoice, 1, playerValueChoice);
         console.log(`Current gameboard: ${rows}`);  
       }
 
@@ -58,8 +59,25 @@ function createComputer(name)
 
 function createPlayer(name)
 {
+
+  function chooseValue()
+  {
+    playerValueChoice = prompt("Do you want to be X or O?");
+    if(playerValueChoice == "x")
+    {
+      compValueChoice == "O";
+    }
+    else
+    {
+      compValueChoice == "x"
+    }
+  } 
+
+  chooseValue();
+
   return {
     name,
+    playerValueChoice,
     playerChoose: function()
     {
       let playerPosition = prompt("Which space do you want to pick?");
@@ -79,18 +97,71 @@ function createPlayer(name)
 //Todo: finish game function. Checks for a winner or a tie
 function game()
 {
-  function checkWinner(rows)
+
+  function reset()
   {
-    if(rows[0] && rows[1] && rows[2] == "x" || rows[0] && rows[1] && rows[2] == "o")
+    for(value in rows)
     {
-      return (console.log("Winner!!"));
+      rows[value] = 1;
     }
+    console.log("Gameboard has been reset");
+    console.log(`Current gameboard: ${rows}`);
+    console.log(`Your game piece is an: ${playerValueChoice}`);
+
+  }
+
+  //checks for a winner or a tie
+  return function gameOutcome(rows, value)
+  {
+
+    function allEquals(array, value) 
+    {
+      return array.every(item => item === value);
+    }
+    
+
+    //checks if three values in a row are the same
+    if(allEquals([rows[0], rows[1], rows[2]], value) 
+    || allEquals([rows[3], rows[4], rows[5]], value) 
+    || allEquals([rows[6], rows[7], rows[8]], value))
+    {
+      console.log("Winner!!");
+      //resets gameboard
+      reset();
+    }
+
+    //checks if three values in a column are the same
+    else if(allEquals([rows[0], rows[3], rows[6]], value) 
+    || allEquals([rows[1], rows[4], rows[7]], value) 
+    || allEquals([rows[2], rows[5], rows[8]], value))
+    {
+      console.log("Winner!!");
+      //resets gameboard
+      reset();
+    }
+
+    //checks if three values in a diagonal are the same
+    else if(allEquals([rows[0], rows[4], rows[8]], value) 
+    || allEquals([rows[2], rows[4], rows[6]], value))
+    {
+      console.log("Winner!!");
+      //resets gameboard
+      reset();
+    }  
+
+
+    //todo: logic for computer winning (display a message?)
   }
 }
 
+
 //create player and computer object
-let comp = createComputer("Jim");
 let play = createPlayer("Alex");
+let comp = createComputer("Jim");
+
+
+//initialize game
+let myGame = game(play, comp);
 
 //logic for the player to choose a space on the board
 console.log("Player's turn to choose:")
@@ -106,38 +177,22 @@ console.log("Player's turn to choose:")
 myChoice = play.playerChoose();
 playChoice(myChoice);
 
-game.checkWinner(rows);
-
-//logic for the player to choose a space on the board
-console.log("Player's turn to choose:")
-myChoice = play.playerChoose();
-playChoice(myChoice);
-
-game.checkWinner(rows);
+myGame(rows, playerValueChoice);
 
 //logic for the computer to choose a space on the board
-console.log("Computer's turn to choose:")
-comp.computerChoose();
-compChoice(comp.computerChoose());
+// console.log("Computer's turn to choose:")
+// comp.computerChoose();
+// compChoice(comp.computerChoose());
 
-//logic for the player to choose a space on the board
-console.log("Player's turn to choose:")
-myChoice = play.playerChoose();
-playChoice(myChoice);
 
-//logic for the computer to choose a space on the board
-console.log("Computer's turn to choose:")
-comp.computerChoose();
-compChoice(comp.computerChoose());
 
-//logic for the player to choose a space on the board
-console.log("Player's turn to choose:")
-myChoice = play.playerChoose();
-playChoice(myChoice);
 
-//logic for the computer to choose a space on the board
-console.log("Computer's turn to choose:")
-comp.computerChoose();
-compChoice(comp.computerChoose());
+
+
+
+
+
+//todo -- have player and computer select an "x" or an "o".
+
 
 
