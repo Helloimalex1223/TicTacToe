@@ -9,7 +9,10 @@ let compValueChoice;
       console.log("Gameboard created:");
 
       //initializes gameboard
-      rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+      // rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+      rows = ["x", "O", "x", 
+              "O", "x", "O", 
+               1, 1, "O"];
 
       //computer choice
       function compChoice(computerChoice)
@@ -47,10 +50,11 @@ function createComputer(name)
       //choose a random spot on the gameboard
       let compValue =  Math.floor(Math.random() * 10);
       //if the row is already filled in, re-roll the computer's value
-      if(rows[compValue] == "x" || rows[compValue] == "O")
+      while(rows[compValue] == "x" || rows[compValue] == "O")
       {
         compValue =  Math.floor(Math.random() * 10);
       }
+      console.log(`computer's choice is ${compValue}`);
       return compValue;
     }
   }
@@ -65,11 +69,11 @@ function createPlayer(name)
     playerValueChoice = prompt("Do you want to be X or O?");
     if(playerValueChoice == "x")
     {
-      compValueChoice == "O";
+      compValueChoice = "O";
     }
     else
     {
-      compValueChoice == "x"
+      compValueChoice = "x"
     }
   } 
 
@@ -94,7 +98,6 @@ function createPlayer(name)
 }
 
 
-//Todo: finish game function. Checks for a winner or a tie
 function game()
 {
 
@@ -113,6 +116,7 @@ function game()
   //checks for a winner or a tie
   return function gameOutcome(rows, value)
   {
+    console.log("Winner checked for");
 
     function allEquals(array, value) 
     {
@@ -147,10 +151,15 @@ function game()
       console.log("Winner!!");
       //resets gameboard
       reset();
+    }
+    
+    //TODO: if none of the array spaces are the placeholder value, and there still isn't a winner, it's a tie.
+    else if(!rows.includes(1))
+    {
+      console.log("No more moves allowed :(. It's a tie!");
+      //resets gameboard
+      reset();
     }  
-
-
-    //todo: logic for computer winning (display a message?)
   }
 }
 
@@ -164,25 +173,22 @@ let comp = createComputer("Jim");
 let myGame = game(play, comp);
 
 //logic for the player to choose a space on the board
-console.log("Player's turn to choose:")
-let myChoice = play.playerChoose();
-playChoice(myChoice);
 
+  console.log("Player's turn to choose:")
+  let myChoice = play.playerChoose();
+  playChoice(myChoice);
+  
+  //check for a winner
+  myGame(rows, playerValueChoice);
 
-console.log("Player's turn to choose:")
-myChoice = play.playerChoose();
-playChoice(myChoice);
-
-console.log("Player's turn to choose:")
-myChoice = play.playerChoose();
-playChoice(myChoice);
-
-myGame(rows, playerValueChoice);
 
 //logic for the computer to choose a space on the board
-// console.log("Computer's turn to choose:")
-// comp.computerChoose();
-// compChoice(comp.computerChoose());
+  console.log("Computer's turn to choose:")
+  comp.computerChoose();
+  compChoice(comp.computerChoose());
+
+//check for a winner
+  myGame(rows, playerValueChoice);
 
 
 
