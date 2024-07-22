@@ -1,6 +1,7 @@
 let rows;
 let playerValueChoice;
 let compValueChoice;
+let gameDivText;
 
 
 //gameboard function
@@ -9,10 +10,7 @@ let compValueChoice;
       console.log("Gameboard created:");
 
       //initializes gameboard
-      // rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
-      rows = ["x", "O", "x", 
-              "O", "x", "O", 
-               1, 1, "O"];
+      rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
 
       //computer choice
       function compChoice(computerChoice)
@@ -36,8 +34,28 @@ let compValueChoice;
       //make player choice function available globally
       window.playChoice = playChoice;
 
-      console.log(`Current gameboard: ${rows}`);  
+      console.log(`Current gameboard: ${rows}`);
+      
+      
+      //creates the 9 squares needed for the game
+      let sqContainer = document.querySelector(".gameBoard");
+      for(let i = 0; i <= 8; i++)
+      {
+        //creates square for the game
+        const gameDiv = document.createElement("div");
+        gameDiv.classList.add("gameBoardSquare");
+
+        //creates the <p> element in the square
+        gameDivText = document.createElement("p");
+        gameDivText.classList.add("gameBoardText");
+        gameDivText.textContent = "X";
+
+        gameDiv.appendChild(gameDivText);
+        sqContainer.appendChild(gameDiv);
+
+      }
     }
+
 )();
 
 
@@ -54,7 +72,6 @@ function createComputer(name)
       {
         compValue =  Math.floor(Math.random() * 10);
       }
-      console.log(`computer's choice is ${compValue}`);
       return compValue;
     }
   }
@@ -165,8 +182,8 @@ function game()
 
 
 //create player and computer object
-let play = createPlayer("Alex");
-let comp = createComputer("Jim");
+// let play = createPlayer("Alex");
+// let comp = createComputer("Jim");
 
 
 //initialize game
@@ -192,13 +209,7 @@ let myGame = game(play, comp);
 
 
 
-
-
-
-
-
-
-//todo -- have player and computer select an "x" or an "o".
+//todo
 
 
 
