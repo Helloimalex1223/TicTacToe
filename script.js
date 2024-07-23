@@ -3,21 +3,74 @@ let playerValueChoice;
 let compValueChoice;
 let gameDivText;
 
+//create player and computer object
+let play = createPlayer("Alex");
+let comp = createComputer("Jim");
+
+//initialize game
+let myGame = game(play, comp);
 
 //gameboard function
 (function()
     {
+      //creates the 9 squares needed for the game
+      let sqContainer = document.querySelector(".gameBoard");
+      for(let i = 0; i <= 8; i++)
+      {
+        //creates square for the game
+        const gameDiv = document.createElement("div");
+        gameDiv.classList.add("gameBoardSquare");
+      
+        //creates the <p> element in the square
+        gameDivText = document.createElement("p");
+        gameDivText.classList.add("gameBoardText");
+
+        gameDiv.appendChild(gameDivText);
+        sqContainer.appendChild(gameDiv);
+      }
+
+
+      let mySquareCollection = document.getElementsByClassName("gameBoardText");
+
+      //add event listener for each gameboard square
+      for(let i = 0; i < mySquareCollection.length; i++)
+      {
+        mySquareCollection[i].setAttribute("data-index", i);
+        mySquareCollection[i].addEventListener("click", function(e)
+        {
+          //when the user clicks a square, input that data-index value into the function that makes a choice for the user
+          playChoice(e.target.getAttribute("data-index"));
+          populateUI(rows);
+          //check for winner after player move
+          myGame(rows, playerValueChoice);
+
+
+          //logic for the computer to choose a space on the board
+          console.log("Computer's turn to choose:")
+          comp.computerChoose();
+          compChoice(comp.computerChoose());
+          populateUI(rows);
+          
+          //check for a winner after computer move
+          myGame(rows, playerValueChoice);
+        })
+      }
+
       console.log("Gameboard created:");
 
       //initializes gameboard
       rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+      populateUI(rows);
+      
 
       //computer choice
       function compChoice(computerChoice)
       {
         console.log(computerChoice);
         rows.splice(computerChoice, 1, compValueChoice);
-        console.log(`Current gameboard: ${rows}`);  
+        console.log(`Current gameboard: ${rows}`);
+        //populates UI with the computer's choice
+        populateUI(rows);
       }
 
       //player choice
@@ -25,7 +78,8 @@ let gameDivText;
       {
         console.log(playerChoice);
         rows.splice(playerChoice, 1, playerValueChoice);
-        console.log(`Current gameboard: ${rows}`);  
+        console.log(`Current gameboard: ${rows}`);
+        //populates UI with the player's choice
       }
 
       //make the computer choice function available globally
@@ -36,27 +90,19 @@ let gameDivText;
 
       console.log(`Current gameboard: ${rows}`);
       
-      
-      //creates the 9 squares needed for the game
-      let sqContainer = document.querySelector(".gameBoard");
-      for(let i = 0; i <= 8; i++)
+
+      //populates the gameBoard Squares with the values in the 'rows' array
+      function populateUI(rows)
       {
-        //creates square for the game
-        const gameDiv = document.createElement("div");
-        gameDiv.classList.add("gameBoardSquare");
-
-        //creates the <p> element in the square
-        gameDivText = document.createElement("p");
-        gameDivText.classList.add("gameBoardText");
-        gameDivText.textContent = "X";
-
-        gameDiv.appendChild(gameDivText);
-        sqContainer.appendChild(gameDiv);
-
+        mySquares = document.getElementsByClassName("gameBoardText");
+        for(let i = 0; i <= 8; i++)
+        {
+          mySquares[i].textContent = rows[i];
+        }
       }
     }
-
 )();
+
 
 
 function createComputer(name)
@@ -66,11 +112,11 @@ function createComputer(name)
     computerChoose: function()
     {
       //choose a random spot on the gameboard
-      let compValue =  Math.floor(Math.random() * 10);
+      let compValue =  Math.floor(Math.random() * 8);
       //if the row is already filled in, re-roll the computer's value
       while(rows[compValue] == "x" || rows[compValue] == "O")
       {
-        compValue =  Math.floor(Math.random() * 10);
+        compValue =  Math.floor(Math.random() * 8);
       }
       return compValue;
     }
@@ -181,35 +227,12 @@ function game()
 }
 
 
-//create player and computer object
-// let play = createPlayer("Alex");
-// let comp = createComputer("Jim");
 
 
-//initialize game
-let myGame = game(play, comp);
 
 //logic for the player to choose a space on the board
-
-  console.log("Player's turn to choose:")
-  let myChoice = play.playerChoose();
-  playChoice(myChoice);
   
   //check for a winner
   myGame(rows, playerValueChoice);
-
-
-//logic for the computer to choose a space on the board
-  console.log("Computer's turn to choose:")
-  comp.computerChoose();
-  compChoice(comp.computerChoose());
-
-//check for a winner
-  myGame(rows, playerValueChoice);
-
-
-
-//todo
-
 
 
