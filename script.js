@@ -1,9 +1,50 @@
+//Create dropdown menu (/button?) so player can select their game piece
+//Display player/computer names
+//fix bug when there is a tie -- computer gets put in infinite loop
+//freeze the game when a user/the computer wins
+
+
 let rows;
 let playerValueChoice;
 let compValueChoice;
 let gameDivText;
 
-//create player and computer object
+const resetButton = document.querySelector(".reset");
+resetButton.addEventListener("click", reset);
+
+const statusMessage = document.querySelector(".status");
+
+//gameStatus variable prevents the game from continuing if there is a winner
+let gameStatus = false;
+
+
+let playerName;
+let compName;
+let playerPieceChoice;
+
+
+let form = document.querySelector("#selectionForm");
+function submitForm(event){
+
+   //Preventing page refresh
+   event.preventDefault();
+}
+
+//Calling a function during form submission.
+form.addEventListener('submit', submitForm);
+
+const confirmButton = document.querySelector(".confirm");
+
+
+//sets the parameters when the confirm button is clicked
+confirmButton.addEventListener("click", function()
+{
+  playerName = document.querySelector("#pname").value;
+  compName = document.querySelector("#cname").value;
+  playerPieceChoice = document.querySelector("#piece").value;
+});
+
+//create player and computer object using input from the form
 let play = createPlayer("Alex");
 let comp = createComputer("Jim");
 
@@ -30,7 +71,7 @@ let myGame = game(play, comp);
       }
 
 
-      let mySquareCollection = document.getElementsByClassName("gameBoardText");
+      let mySquareCollection = document.getElementsByClassName("gameBoardSquare");
 
       //add event listener for each gameboard square
       for(let i = 0; i < mySquareCollection.length; i++)
@@ -39,27 +80,33 @@ let myGame = game(play, comp);
         mySquareCollection[i].addEventListener("click", function(e)
         {
           //when the user clicks a square, input that data-index value into the function that makes a choice for the user
-          playChoice(e.target.getAttribute("data-index"));
-          populateUI(rows);
-          //check for winner after player move
-          myGame(rows, playerValueChoice);
+          if(rows[e.target.getAttribute("data-index")] == "x" || rows[e.target.getAttribute("data-index")] == "O")
+          {
+            statusMessage.textContent = "That space is already taken. Choose a different space";
+          }
+          else
+          {
+            playChoice(e.target.getAttribute("data-index"));
+            //check for winner after player move
+            myGame(rows, playerValueChoice);
 
 
-          //logic for the computer to choose a space on the board
-          console.log("Computer's turn to choose:")
-          comp.computerChoose();
-          compChoice(comp.computerChoose());
-          populateUI(rows);
+            //then the computer chooses a space
+            console.log("Computer's turn to choose:")
+            comp.computerChoose();
+            compChoice(comp.computerChoose());
           
-          //check for a winner after computer move
-          myGame(rows, playerValueChoice);
+            //check for a winner after computer move
+            myGame(rows, playerValueChoice);
+          }
         })
       }
 
       console.log("Gameboard created:");
 
+
       //initializes gameboard
-      rows = [1, 1, 1, 1, 1, 1, 1, 1, 1];
+      rows = ["", "", "", "", "", "", "", "", " "];
       populateUI(rows);
       
 
@@ -80,6 +127,7 @@ let myGame = game(play, comp);
         rows.splice(playerChoice, 1, playerValueChoice);
         console.log(`Current gameboard: ${rows}`);
         //populates UI with the player's choice
+        populateUI(rows);
       }
 
       //make the computer choice function available globally
@@ -129,18 +177,21 @@ function createPlayer(name)
 
   function chooseValue()
   {
-    playerValueChoice = prompt("Do you want to be X or O?");
-    if(playerValueChoice == "x")
-    {
-      compValueChoice = "O";
-    }
-    else
-    {
-      compValueChoice = "x"
-    }
+      playerValueChoice = prompt("Choose a value: x or O");
+
+      if(playerValueChoice == "x" || playerValueChoice == "X" || playerValueChoice == undefined)
+      {
+          playerValueChoice = "x";
+          compValueChoice = "O";
+        }
+        else if(playerValueChoice == "o" || playerValueChoice == "O")
+        {
+          compValueChoice = "x"
+        }
   } 
 
   chooseValue();
+  
 
   return {
     name,
@@ -152,7 +203,7 @@ function createPlayer(name)
       //if the spot the player chooses is already filled, prompt the player again
       while(rows[playerPosition] == "x" || rows[playerPosition] == "O")
       {
-        playerPosition = prompt("That space is already taken. Choose a different space");
+        playerPosition = alert("That space is already taken. Choose a different space");
       }
 
       return playerPosition;
@@ -160,26 +211,22 @@ function createPlayer(name)
   }
 }
 
+function reset()
+{
+  //resets the rows array and updates the UI
+  mySquares = document.getElementsByClassName("gameBoardText");
+  for(value in rows)
+  {
+    rows[value] = "";
+    mySquares[value].textContent = rows[value];
+  }
+}
 
 function game()
 {
-
-  function reset()
-  {
-    for(value in rows)
-    {
-      rows[value] = 1;
-    }
-    console.log("Gameboard has been reset");
-    console.log(`Current gameboard: ${rows}`);
-    console.log(`Your game piece is an: ${playerValueChoice}`);
-
-  }
-
   //checks for a winner or a tie
   return function gameOutcome(rows, value)
   {
-    console.log("Winner checked for");
 
     function allEquals(array, value) 
     {
@@ -192,9 +239,8 @@ function game()
     || allEquals([rows[3], rows[4], rows[5]], value) 
     || allEquals([rows[6], rows[7], rows[8]], value))
     {
-      console.log("Winner!!");
-      //resets gameboard
-      reset();
+      statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
+      gameStatus = true;
     }
 
     //checks if three values in a column are the same
@@ -202,37 +248,28 @@ function game()
     || allEquals([rows[1], rows[4], rows[7]], value) 
     || allEquals([rows[2], rows[5], rows[8]], value))
     {
-      console.log("Winner!!");
-      //resets gameboard
-      reset();
+      statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
+      gameStatus = true;
     }
 
     //checks if three values in a diagonal are the same
     else if(allEquals([rows[0], rows[4], rows[8]], value) 
     || allEquals([rows[2], rows[4], rows[6]], value))
     {
-      console.log("Winner!!");
-      //resets gameboard
-      reset();
+      statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
+      gameStatus = true;
     }
     
-    //TODO: if none of the array spaces are the placeholder value, and there still isn't a winner, it's a tie.
     else if(!rows.includes(1))
     {
-      console.log("No more moves allowed :(. It's a tie!");
-      //resets gameboard
-      reset();
+      statusMessage.textContent = "It's a tie! Click the `Reset` button to play again.";
+      gameStatus = true;
     }  
   }
 }
 
-
-
-
-
-//logic for the player to choose a space on the board
-  
-  //check for a winner
-  myGame(rows, playerValueChoice);
+//check for a winner
+myGame(rows, playerValueChoice);
+myGame(rows, compValueChoice);
 
 

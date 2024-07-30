@@ -3,16 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="script.js"></script>
     <link rel="stylesheet" href="style.css">
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <div class="gameContainer">
-        <h1 class="heading">Tic Tac Toe!</h1>
-        <div class="gameBoard">
-
+    <h1 class="heading">Tic Tac Toe!</h1>
+    <div class="uiContainer">
+        <div class="info">
+            <form id = "selectionForm">
+                <label for="pname">Your Name:</label>
+                <input type="text" id="pname" name="pname"><br><br>
+                <label for="cname">Computer Name:</label>
+                <input type="text" id="cname" name="cname"><br><br>
+    
+                <label for="selection">Choose a game piece:</label>
+                <select name="piece" id="piece">
+                    <option value="x">x</option>
+                    <option value="O">O</option>
+                </select>
+                <button class="confirm">Confirm</button>
+              </form>
+            
+        </div>
+    
+        <div class="gameContainer">
+            <div class="playerSelection">
+                <h3 class="status">Status: Game in progress</h3>
+                <button class="reset">Reset</button>
+            </div>
+            <div class="gameBoard">
+            </div>
         </div>
     </div>
+    <script defer src="script.js"></script>
 </body>
 </html>
