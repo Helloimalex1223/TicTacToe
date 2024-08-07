@@ -2,25 +2,26 @@
 //Display player/computer names
 //fix bug when there is a tie -- computer gets put in infinite loop
 //freeze the game when a user/the computer wins
+  //Looks like it happens when the player makes the last move, then the computer tries to
+  //pick a square and it can't.
+  //Check for winner after each move?
 
 
 let rows;
 let playerValueChoice;
 let compValueChoice;
 let gameDivText;
+let play;
+let comp;
+let myGame;
+let playerName;
+let compName;
+let gameWin = false;
 
 const resetButton = document.querySelector(".reset");
 resetButton.addEventListener("click", reset);
 
 const statusMessage = document.querySelector(".status");
-
-//gameStatus variable prevents the game from continuing if there is a winner
-let gameStatus = false;
-
-
-let playerName;
-let compName;
-let playerPieceChoice;
 
 
 let form = document.querySelector("#selectionForm");
@@ -35,21 +36,18 @@ form.addEventListener('submit', submitForm);
 
 const confirmButton = document.querySelector(".confirm");
 
-
-//sets the parameters when the confirm button is clicked
 confirmButton.addEventListener("click", function()
 {
   playerName = document.querySelector("#pname").value;
   compName = document.querySelector("#cname").value;
-  playerPieceChoice = document.querySelector("#piece").value;
+  playerValueChoice = document.querySelector("#piece").value;
+
+  //create player and computer. Initialize game.
+  play = createPlayer("Alex");
+  comp = createComputer("Jim");
+  myGame = game(play, comp);
+
 });
-
-//create player and computer object using input from the form
-let play = createPlayer("Alex");
-let comp = createComputer("Jim");
-
-//initialize game
-let myGame = game(play, comp);
 
 //gameboard function
 (function()
@@ -86,18 +84,25 @@ let myGame = game(play, comp);
           }
           else
           {
-            playChoice(e.target.getAttribute("data-index"));
-            //check for winner after player move
-            myGame(rows, playerValueChoice);
+            //if there is already a winner, prevent the player/computer from selecting a new square. Prevents an infinite loop.
 
-
-            //then the computer chooses a space
-            console.log("Computer's turn to choose:")
-            comp.computerChoose();
-            compChoice(comp.computerChoose());
-          
-            //check for a winner after computer move
             myGame(rows, playerValueChoice);
+            myGame(rows, compValueChoice);
+
+            if(gameWin == false)
+            {
+              playChoice(e.target.getAttribute("data-index"));
+              //check for winner after player move
+              myGame(rows, playerValueChoice);
+              populateUI(rows);
+  
+  
+              //then the computer chooses a space
+              console.log("Computer's turn to choose:")
+              comp.computerChoose();
+              compChoice(comp.computerChoose());
+              populateUI(rows);
+            }
           }
         })
       }
@@ -106,7 +111,7 @@ let myGame = game(play, comp);
 
 
       //initializes gameboard
-      rows = ["", "", "", "", "", "", "", "", " "];
+      rows = ["", "", "", "", "", "", "", "", ""];
       populateUI(rows);
       
 
@@ -162,7 +167,7 @@ function createComputer(name)
       //choose a random spot on the gameboard
       let compValue =  Math.floor(Math.random() * 8);
       //if the row is already filled in, re-roll the computer's value
-      while(rows[compValue] == "x" || rows[compValue] == "O")
+      while(rows[compValue] == "x" || rows[compValue] == "O" && gameWin == false)
       {
         compValue =  Math.floor(Math.random() * 8);
       }
@@ -177,7 +182,7 @@ function createPlayer(name)
 
   function chooseValue()
   {
-      playerValueChoice = prompt("Choose a value: x or O");
+
 
       if(playerValueChoice == "x" || playerValueChoice == "X" || playerValueChoice == undefined)
       {
@@ -215,56 +220,70 @@ function reset()
 {
   //resets the rows array and updates the UI
   mySquares = document.getElementsByClassName("gameBoardText");
+  gameWin = false;
   for(value in rows)
   {
     rows[value] = "";
     mySquares[value].textContent = rows[value];
+    statusMessage.textContent = "Game in progress";
   }
 }
 
 function game()
 {
   //checks for a winner or a tie
-  return function gameOutcome(rows, value)
+  return function gameOutcome(rows, value) 
   {
-
     function allEquals(array, value) 
     {
       return array.every(item => item === value);
     }
-    
-
-    //checks if three values in a row are the same
+  
+    // Debugging logs
+    console.log("Rows:", rows);
+    console.log("Value:", value);
+  
+    // Checks if three values in a row are the same
+    console.log("Checking rows...");
     if(allEquals([rows[0], rows[1], rows[2]], value) 
     || allEquals([rows[3], rows[4], rows[5]], value) 
     || allEquals([rows[6], rows[7], rows[8]], value))
     {
+      console.log("Row win detected");
       statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
-      gameStatus = true;
+      gameWin = true;
     }
-
-    //checks if three values in a column are the same
+  
+    // Checks if three values in a column are the same
     else if(allEquals([rows[0], rows[3], rows[6]], value) 
     || allEquals([rows[1], rows[4], rows[7]], value) 
     || allEquals([rows[2], rows[5], rows[8]], value))
     {
+      console.log("Column win detected");
       statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
-      gameStatus = true;
+      gameWin = true;
     }
-
-    //checks if three values in a diagonal are the same
+  
+    // Checks if three values in a diagonal are the same
     else if(allEquals([rows[0], rows[4], rows[8]], value) 
     || allEquals([rows[2], rows[4], rows[6]], value))
     {
+      console.log("Diagonal win detected");
       statusMessage.textContent = "Winner! Click the `Reset` button to play again.";
-      gameStatus = true;
+      gameWin = true;
     }
-    
-    else if(!rows.includes(1))
+  
+    // Checks if there are no empty cells left, indicating a tie
+    else if(!rows.includes(""))
     {
+      console.log("Tie detected");
       statusMessage.textContent = "It's a tie! Click the `Reset` button to play again.";
-      gameStatus = true;
-    }  
+      gameWin = true;
+    }
+    else
+    {
+      console.log("No win or tie detected");
+    }
   }
 }
 
