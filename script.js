@@ -43,8 +43,8 @@ confirmButton.addEventListener("click", function()
   playerValueChoice = document.querySelector("#piece").value;
 
   //create player and computer. Initialize game.
-  play = createPlayer("Alex");
-  comp = createComputer("Jim");
+  play = createPlayer(playerName);
+  comp = createComputer(compName);
   myGame = game(play, comp);
 
 });
@@ -225,7 +225,7 @@ function reset()
   {
     rows[value] = "";
     mySquares[value].textContent = rows[value];
-    statusMessage.textContent = "Game in progress";
+    statusMessage.textContent = "Status: Game in progress";
   }
 }
 

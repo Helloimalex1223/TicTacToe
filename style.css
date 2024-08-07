@@ -1,4 +1,16 @@
 /* Prevent user from highlighting text in the tic tac toe board */
+body
+{
+    width: 100%;
+    background-image: url("pexels-fwstudio-33348-172292.jpg");
+}
+
+button
+{
+    border: 2px solid black;
+    background-color: rgb(241, 185, 80);
+    font-weight: bolder;
+}
 
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
@@ -10,13 +22,25 @@
                                     supported by Chrome, Edge, Opera and Firefox */
   }
 
+.outerContainer
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .uiContainer
 {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     gap: 3rem;
+    padding: 3rem;
+    max-width: 1200px;
+
+    background-color: rgba(255, 255, 255, 0.801);
 }
 
 .info
@@ -32,7 +56,7 @@
 .info input
 {
     height: 50px;
-    font-size: 25pxd;
+    font-size: 25px;
 }
 
 .heading
@@ -40,7 +64,15 @@
     align-self: center;
     width: 100%;
     flex-shrink: 0;
+    font-size: 60px;
     text-align: center;
+    color: white;
+}
+
+.reset
+{
+    padding: 0 4rem;
+    font-size: 20px;
 }
 
 .gameContainer
@@ -51,6 +83,11 @@
     justify-content: center;
     gap: 1rem;
     flex-grow: 2;
+}
+
+.status
+{
+    font-size: 30px;
 }
 
 .gameBoard
@@ -90,4 +127,31 @@
 {
     display: flex;
     gap: 2rem;
+}
+
+input
+{
+    box-sizing: border-box;
+    border: 2px solid black;
+}
+
+#pname, #cname
+{
+    padding: .5rem;
+    font-size: 35px;
+}
+
+#piece
+{
+    padding: 1rem;
+    font-size: 20px;
+}
+
+.confirm
+{
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    font-size: 20px;
+    margin-top: 1rem;
 }
